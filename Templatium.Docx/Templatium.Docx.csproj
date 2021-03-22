@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <LangVersion>9.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>0.1.6</PackageVersion>
+        <Title>Templatium.Docx</Title>
+        <Authors>SightRo</Authors>
+        <Description>Make word generation in a human-readable way.</Description>
+        <PackageTags>word; template;</PackageTags>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" />
+    </ItemGroup>
+
+</Project>
