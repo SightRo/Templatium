@@ -1,5 +1,6 @@
 ﻿namespace Templatium.Docx
 
+open DocumentFormat.OpenXml
 open DocumentFormat.OpenXml.Packaging
 open DocumentFormat.OpenXml.Wordprocessing
 open System.Linq
@@ -8,16 +9,23 @@ open Templatium.Docx
 
 module DocxTemplater =
 
-    // TODO: Handle headers and footers
-    let private getAllSdtElements (doc: WordprocessingDocument) =
+    let private getAllSdtNodesFromNode (node: OpenXmlElement) =
         let sdts =
-            OpenXmlHelpers.findAllNodeByName doc.MainDocumentPart.Document.Body Constants.sdt
+            OpenXmlHelpers.findAllNodeByName node Constants.sdt
 
         sdts.OfType<SdtElement>()
 
-    // TODO: Doesn't work. Investigate.
-    let generateDocument (processors: IProcessor seq) (contents: IContent seq) (doc: WordprocessingDocument) =
-        let sdts = getAllSdtElements doc
+    // TODO: Handle headers and footers
+    let private getAllSdtNodesFromDoc (doc: WordprocessingDocument) =
+        getAllSdtNodesFromNode doc.MainDocumentPart.Document.Body
+
+    let fillNode
+        (processors: IProcessor seq)
+        (contents: IContent seq)
+        (doc: WordprocessingDocument)
+        (node: OpenXmlElement)
+        =
+        let sdts = getAllSdtNodesFromNode node |> Seq.rev
 
         for sdt in sdts do
             let titleNode =
@@ -25,27 +33,29 @@ module DocxTemplater =
 
             match titleNode with
             | None -> ()
-            | Some node ->
+            | Some alias ->
                 let contentOpt =
                     contents
-                    |> Seq.tryFind (fun c -> c.Title = node.Val)
+                    |> Seq.tryFind (fun c -> c.Title = alias.Val)
 
                 match contentOpt with
                 | None -> ()
                 | Some content ->
-                    let processorOpt =
-                        processors
-                        |> Seq.tryFind (fun p -> p.CanFill doc sdt content)
+                    processors
+                    |> Seq.tryFind (fun p -> p.CanFill doc sdt content)
+                    |> Option.iter (fun p -> p.Fill doc sdt content)
 
-                    match processorOpt with
-                    | None -> ()
-                    | Some processor -> processor.Fill doc sdt content
+        ()
+
+
+    let fillDocument (processors: IProcessor seq) (contents: IContent seq) (doc: WordprocessingDocument) =
+        let allSdtNodes = getAllSdtNodesFromDoc doc
 
         ()
 
     // TODO: Try find more functional approach
     let deleteContentControls (doc: WordprocessingDocument) =
-        let sdts = List(getAllSdtElements doc)
+        let sdts = List(getAllSdtNodesFromDoc doc)
 
         for i = sdts.Count - 1 downto 0 do
             let sdt = sdts[i]
