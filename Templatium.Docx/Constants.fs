@@ -9,3 +9,5 @@ module Constants =
     let alias = "alias"
     [<Literal>]
     let table = "tbl"
+    [<Literal>]
+    let checkbox = "checkbox"

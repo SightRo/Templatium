@@ -17,6 +17,7 @@
 		<Compile Include="Processors\String.fs" />
 		<Compile Include="Processors\Image.fs" />
 		<Compile Include="Processors\Table.fs" />
+		<Compile Include="Processors\Checkbox.fs" />
     </ItemGroup>
 
 </Project>
