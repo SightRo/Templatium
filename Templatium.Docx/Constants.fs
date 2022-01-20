@@ -7,3 +7,5 @@ module Constants =
     let sdt = "sdt"
     [<Literal>]
     let alias = "alias"
+    [<Literal>]
+    let table = "tbl"

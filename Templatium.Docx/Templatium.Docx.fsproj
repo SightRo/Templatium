@@ -13,9 +13,10 @@
         <Compile Include="Base.fs" />
         <Compile Include="Constants.fs" />
 		<Compile Include="OpenXmlHelpers.fs" />
+        <Compile Include="DocxTemplater.fs" />
 		<Compile Include="Processors\String.fs" />
 		<Compile Include="Processors\Image.fs" />
-        <Compile Include="DocxTemplater.fs" />
+		<Compile Include="Processors\Table.fs" />
     </ItemGroup>
 
 </Project>

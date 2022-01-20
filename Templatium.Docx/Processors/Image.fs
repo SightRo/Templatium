@@ -154,9 +154,9 @@ module internal ImageProcessor =
 
 type ImageProcessor =
     interface IProcessor with
-        member _.CanFill _ _ content = content :? ImageContent
+        member _.CanFill content _ _  = content :? ImageContent
 
-        member _.Fill doc sdt content =
+        member _.Fill content sdt metadata =
             let imageContent = content :?> ImageContent
 
             let contentBlock =
@@ -168,8 +168,8 @@ type ImageProcessor =
                     block.Descendants<Drawing>().FirstOrDefault()
 
                 match imageBlock with
-                | null -> ImageProcessor.insertImage doc block imageContent
-                | _ -> ImageProcessor.replaceImage doc imageBlock imageContent
+                | null -> ImageProcessor.insertImage metadata.Document block imageContent
+                | _ -> ImageProcessor.replaceImage metadata.Document imageBlock imageContent
             | _ -> ()
 
             ()

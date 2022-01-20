@@ -1,23 +1,48 @@
 ﻿namespace Templatium.Docx
 
+open DocumentFormat.OpenXml
 open DocumentFormat.OpenXml.Packaging
 open DocumentFormat.OpenXml.Wordprocessing
-open System.Linq
-open System.Collections.Generic
 open Templatium.Docx
 
 module DocxTemplater =
+    let inline private getAllSdtNodesFromNode (node: OpenXmlElement) =
+        OpenXmlHelpers.findDescendantsByName<SdtElement> node Constants.sdt
 
-    // TODO: Handle headers and footers
-    let private getAllSdtElements (doc: WordprocessingDocument) =
-        let sdts =
-            OpenXmlHelpers.findAllNodeByName doc.MainDocumentPart.Document.Body Constants.sdt
+    let private getAllSdtNodesFromDoc (doc: WordprocessingDocument) =
+        let sdts = ResizeArray()
 
-        sdts.OfType<SdtElement>()
+        sdts.AddRange(getAllSdtNodesFromNode doc.MainDocumentPart.Document.Body)
 
-    // TODO: Doesn't work. Investigate.
-    let generateDocument (processors: IProcessor seq) (contents: IContent seq) (doc: WordprocessingDocument) =
-        let sdts = getAllSdtElements doc
+        let inline findSdts (part: OpenXmlPart) =
+            OpenXmlHelpers.findDescendantsByName part.RootElement Constants.sdt
+
+        sdts.AddRange(
+            doc.MainDocumentPart.HeaderParts
+            |> Seq.collect findSdts
+        )
+
+        sdts.AddRange(
+            doc.MainDocumentPart.FooterParts
+            |> Seq.collect findSdts
+        )
+
+        sdts.AddRange(findSdts doc.MainDocumentPart.FootnotesPart)
+        sdts.AddRange(findSdts doc.MainDocumentPart.EndnotesPart)
+
+        sdts
+
+    let fillNode
+        (processors: IProcessor seq)
+        (contents: IContent seq)
+        (doc: WordprocessingDocument)
+        (node: OpenXmlElement)
+        =
+        let sdts = getAllSdtNodesFromNode node |> Seq.rev
+
+        let metadata =
+            { Processors = processors
+              Document = doc }
 
         for sdt in sdts do
             let titleNode =
@@ -25,27 +50,40 @@ module DocxTemplater =
 
             match titleNode with
             | None -> ()
-            | Some node ->
+            | Some alias ->
                 let contentOpt =
                     contents
-                    |> Seq.tryFind (fun c -> c.Title = node.Val)
+                    |> Seq.tryFind (fun c -> c.Title = alias.Val.Value)
 
                 match contentOpt with
                 | None -> ()
                 | Some content ->
-                    let processorOpt =
-                        processors
-                        |> Seq.tryFind (fun p -> p.CanFill doc sdt content)
+                    processors
+                    |> Seq.tryFind (fun p -> p.CanFill content sdt metadata)
+                    |> Option.iter (fun p -> p.Fill content sdt metadata)
 
-                    match processorOpt with
-                    | None -> ()
-                    | Some processor -> processor.Fill doc sdt content
+        ()
 
+
+    let fillDocument (processors: IProcessor seq) (contents: IContent seq) (doc: WordprocessingDocument) =
+        fillNode processors contents doc doc.MainDocumentPart.Document.Body
+
+        let fillPart (part: OpenXmlPart) =
+            fillNode processors contents doc part.RootElement
+
+        doc.MainDocumentPart.HeaderParts
+        |> Seq.iter fillPart
+
+        doc.MainDocumentPart.FooterParts
+        |> Seq.iter fillPart
+
+        fillPart doc.MainDocumentPart.FootnotesPart
+        fillPart doc.MainDocumentPart.EndnotesPart
         ()
 
     // TODO: Try find more functional approach
     let deleteContentControls (doc: WordprocessingDocument) =
-        let sdts = List(getAllSdtElements doc)
+        let sdts = getAllSdtNodesFromDoc doc
 
         for i = sdts.Count - 1 downto 0 do
             let sdt = sdts[i]
