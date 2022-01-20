@@ -14,8 +14,10 @@ type Content<'a> =
         member this.Title = this.Title
         member this.Value = this.Value :> obj
 
-type IProcessor =
-    abstract CanFill: WordprocessingDocument -> SdtElement -> IContent -> bool
-    abstract Fill: WordprocessingDocument -> SdtElement -> IContent -> unit
+type FillingMetadata =
+    { Processors: IProcessor seq
+      Document: WordprocessingDocument }
 
-
+and IProcessor =
+    abstract CanFill : IContent -> SdtElement -> FillingMetadata -> bool
+    abstract Fill : IContent -> SdtElement -> FillingMetadata -> unit

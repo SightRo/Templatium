@@ -6,9 +6,9 @@ open System.Linq
 
 type StringProcessor =
     interface IProcessor with
-        member _.CanFill _ _ content = content :? Content<string>
+        member _.CanFill content _ _ = content :? Content<string>
 
-        member _.Fill _ sdt content =
+        member _.Fill content sdt _ =
             let stringContent = content :?> Content<string>
 
             let contentNode =
