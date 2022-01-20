@@ -5,7 +5,7 @@ open DocumentFormat.OpenXml.Packaging
 open DocumentFormat.OpenXml.Wordprocessing
 open Templatium.Docx
 
-module internal DocxTemplater =
+module DocxTemplater =
     let inline private getAllSdtNodesFromNode (node: OpenXmlElement) =
         OpenXmlHelpers.findDescendantsByName<SdtElement> node Constants.sdt
 
