@@ -13,7 +13,7 @@ type TableContent =
         member this.Value = this.Rows
 
 
-type TableProcessor =
+type TableProcessor() =
     interface IProcessor with
         member _.CanFill content _ _ = content :? TableContent
 

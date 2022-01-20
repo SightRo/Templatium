@@ -152,7 +152,7 @@ module internal ImageProcessor =
 
         ()
 
-type ImageProcessor =
+type ImageProcessor() =
     interface IProcessor with
         member _.CanFill content _ _  = content :? ImageContent
 

@@ -4,7 +4,7 @@ open Templatium.Docx
 open DocumentFormat.OpenXml.Wordprocessing
 open System.Linq
 
-type StringProcessor =
+type StringProcessor() =
     interface IProcessor with
         member _.CanFill content _ _ = content :? Content<string>
 
