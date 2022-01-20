@@ -26,9 +26,11 @@ module DocxTemplater =
             doc.MainDocumentPart.FooterParts
             |> Seq.collect findSdts
         )
-
-        sdts.AddRange(findSdts doc.MainDocumentPart.FootnotesPart)
-        sdts.AddRange(findSdts doc.MainDocumentPart.EndnotesPart)
+        
+        if doc.MainDocumentPart.FootnotesPart <> null then
+            sdts.AddRange(findSdts doc.MainDocumentPart.FootnotesPart)
+        if doc.MainDocumentPart.EndnotesPart <> null then
+            sdts.AddRange(findSdts doc.MainDocumentPart.EndnotesPart)
 
         sdts
 
@@ -76,10 +78,13 @@ module DocxTemplater =
 
         doc.MainDocumentPart.FooterParts
         |> Seq.iter fillPart
-
-        fillPart doc.MainDocumentPart.FootnotesPart
-        fillPart doc.MainDocumentPart.EndnotesPart
-        ()
+        
+        if doc.MainDocumentPart.FootnotesPart <> null then
+            fillPart doc.MainDocumentPart.FootnotesPart
+        if doc.MainDocumentPart.EndnotesPart <> null then
+            fillPart doc.MainDocumentPart.EndnotesPart
+        
+        doc
 
     // TODO: Try find more functional approach
     let deleteContentControls (doc: WordprocessingDocument) =
