@@ -98,7 +98,7 @@ module DocxTemplater =
 
             match sdtContent with
             | Some block ->
-                let mutable prev = block.PreviousSibling()
+                let mutable prev = sdt.PreviousSibling()
 
                 for child in block.ChildElements do
                     prev <- prev.InsertAfterSelf(child.CloneNode(true))
