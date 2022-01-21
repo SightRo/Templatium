@@ -18,6 +18,7 @@
 		<Compile Include="Processors\Image.fs" />
 		<Compile Include="Processors\Table.fs" />
 		<Compile Include="Processors\Checkbox.fs" />
+		<Compile Include="Processors\DefaultProcessors.fs" />
     </ItemGroup>
 
 </Project>
