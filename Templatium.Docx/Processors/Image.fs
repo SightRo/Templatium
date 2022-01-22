@@ -1,10 +1,11 @@
 ﻿namespace Templatium.Docx.Processors
 
+open DocumentFormat.OpenXml.Drawing
+open DocumentFormat.OpenXml.Drawing.Wordprocessing
 open Templatium.Docx
 open DocumentFormat.OpenXml.Wordprocessing
 open System.Linq
 open DocumentFormat.OpenXml
-open DocumentFormat.OpenXml.Drawing
 open DocumentFormat.OpenXml.Packaging
 open System.IO
 open System
@@ -48,8 +49,8 @@ module internal ImageProcessor =
         | Wmf -> ImagePartType.Wmf
 
     // TODO: Investigate. Does it really need id properties
-    let getUniqId32 () = 12u
-    let getUniqId64 () = 12UL
+    let getUniqId32 () = Convert.ToUInt32 (Random.Shared.Next())
+    let getUniqId64 () = Convert.ToUInt64 (Random.Shared.NextInt64())
 
     let replaceImage (doc: WordprocessingDocument) (imageBlock: OpenXmlElement) content =
         let imageId =
@@ -59,22 +60,21 @@ module internal ImageProcessor =
 
         match content.Size with
         | Size (width, height) ->
-            let extent =
-                imageBlock.Descendants<Wordprocessing.Extent>().FirstOrDefault()
-
-            extent.Cx <- Int64Value(width)
-            extent.Cy <- Int64Value(height)
+            imageBlock.Descendants<Extent>()
+            |> Seq.iter
+                (fun extent ->
+                    extent.Cx <- Int64Value(width)
+                    extent.Cy <- Int64Value(height))
         | Original -> ()
 
-        use writer = new BinaryWriter(imagePart.GetStream())
-        writer.Write(content.Image)
+        imagePart.FeedData(new MemoryStream(content.Image))
         ()
 
     let insertImage (doc: WordprocessingDocument) (contentBlock: OpenXmlElement) content =
         let imageType = convertToWordType content.Type
 
         match content.Size with
-        | Original -> failwith "lol"
+        | Original -> failwith "Added image must specify size explicitly"
         | Size (width, height) ->
             let imagePart =
                 doc.MainDocumentPart.AddImagePart imageType
@@ -89,30 +89,30 @@ module internal ImageProcessor =
             // https://docs.microsoft.com/en-us/office/open-xml/how-to-insert-a-picture-into-a-word-processing-document
             let draw =
                 Drawing(
-                    Wordprocessing.Inline(
-                        Wordprocessing.Extent(Cx = Int64Value(width), Cy = Int64Value(height)),
-                        Wordprocessing.EffectExtent(
+                    Inline(
+                        Extent(Cx = Int64Value(width), Cy = Int64Value(height)),
+                        EffectExtent(
                             LeftEdge = Int64Value(0),
                             TopEdge = Int64Value(0),
                             RightEdge = Int64Value(0),
                             BottomEdge = Int64Value(0)
                         ),
-                        Wordprocessing.DocProperties(
+                        DocProperties(
                             Id = UInt32Value(getUniqId32 ()),
                             Name = StringValue(DateTime.Now.Ticks.ToString())
                         ),
-                        Wordprocessing.NonVisualGraphicFrameDrawingProperties(GraphicFrameLocks(NoChangeAspect = true)),
+                        NonVisualGraphicFrameDrawingProperties(GraphicFrameLocks(NoChangeAspect = true)),
                         Graphic(
                             GraphicData(
-                                Pictures.Picture(
-                                    Pictures.NonVisualPictureProperties(
-                                        Pictures.NonVisualDrawingProperties(
+                                Drawing.Pictures.Picture(
+                                    Drawing.Pictures.NonVisualPictureProperties(
+                                        Drawing.Pictures.NonVisualDrawingProperties(
                                             Id = UInt32Value(getUniqId32 ()),
                                             Name = relationId
                                         ),
-                                        Pictures.NonVisualPictureDrawingProperties()
+                                        Drawing.Pictures.NonVisualPictureDrawingProperties()
                                     ),
-                                    Pictures.BlipFill(
+                                    Drawing.Pictures.BlipFill(
                                         Blip(
                                             BlipExtensionList(
                                                 BlipExtension(
@@ -124,7 +124,7 @@ module internal ImageProcessor =
                                         ),
                                         Stretch(FillRectangle())
                                     ),
-                                    Pictures.ShapeProperties(
+                                    Drawing.Pictures.ShapeProperties(
                                         Transform2D(
                                             Offset(X = Int64Value(0), Y = Int64Value(0)),
                                             Extents(Cx = Int64Value(width), Cy = Int64Value(height))
@@ -154,7 +154,7 @@ module internal ImageProcessor =
 
 type ImageProcessor() =
     interface IProcessor with
-        member _.CanFill content _ _  = content :? ImageContent
+        member _.CanFill content _ _ = content :? ImageContent
 
         member _.Fill content sdt metadata =
             let imageContent = content :?> ImageContent
