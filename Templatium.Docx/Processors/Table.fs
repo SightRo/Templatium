@@ -1,5 +1,6 @@
 ﻿namespace Templatium.Docx.Processors
 
+open DocumentFormat.OpenXml
 open DocumentFormat.OpenXml.Wordprocessing
 open Microsoft.FSharp.Collections
 open Templatium.Docx
@@ -24,20 +25,22 @@ type TableProcessor() =
             |> Option.bind (fun contentBlock -> OpenXmlHelpers.findFirstNodeByName<Table> contentBlock Constants.table)
             |> Option.bind
                 (fun tableNode ->
-                    let rows = tableNode.Descendants<TableRow>()
-
-                    match rows.Count() with
-                    | 0 -> None
-                    | 1 -> Some(rows.First())
-                    | _ -> None)
+                    tableNode.Descendants<TableRow>()
+                    |> Seq.tryFind
+                        (fun r ->
+                            match OpenXmlHelpers.findFirstNodeByName r Constants.sdt with
+                            | Some _ -> true
+                            | None -> false))
             |> Option.iter
-                (fun row ->
-                    let mutable previousRow = row
+                (fun rowTemplate ->
+                    let mutable previousRow = rowTemplate :> OpenXmlElement
 
                     for contentRow in tableContent.Rows do
-                        let clonedRow = (row.CloneNode true) :?> TableRow
+                        let clonedRow = rowTemplate.CloneNode true
+
                         DocxTemplater.fillNode metadata.Processors contentRow metadata.Document clonedRow
                         previousRow <- previousRow.InsertAfterSelf clonedRow
-                    
-                    row.Remove())
+
+                    rowTemplate.Remove())
+
             ()
