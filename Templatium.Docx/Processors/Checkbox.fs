@@ -57,13 +57,8 @@ module private ProcessorImpl =
              else
                  OnOffValues.Zero)
 
-        let textNode =
-            sdt
-                .GetFirstChild<SdtContentRun>()
-                .GetFirstChild<Text>()
-
-        textNode.Text <- symbol
-
+        OpenXmlHelpers.findFirstNodeByName<Text> sdt Constants.text
+        |> Option.iter (fun textNode -> textNode.Text <- symbol)
 
 type CheckBoxProcessor() =
     interface IProcessor with

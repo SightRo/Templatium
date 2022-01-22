@@ -11,3 +11,5 @@ module Constants =
     let table = "tbl"
     [<Literal>]
     let checkbox = "checkbox"
+    [<Literal>]
+    let text = "t"
