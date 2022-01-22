@@ -13,17 +13,17 @@ let outputPath = __SOURCE_DIRECTORY__ + "/output.docx"
 
 [<Literal>]
 let imagePath = __SOURCE_DIRECTORY__ + "/image.jpg"
+[<Literal>]
+let image1Path = __SOURCE_DIRECTORY__ + "/image.jpg"
 
 let run () =
-    let imageBytes = File.ReadAllBytes imagePath
-
     let contents: IContent seq =
         [ { Title = "ReplaceImageWithOriginalSize"
-            Image = imageBytes
+            Image = File.ReadAllBytes imagePath
             Type = Jpeg
             Size = Original }
           { Title = "ReplaceImageWithExplicitSize"
-            Image = imageBytes
+            Image = File.ReadAllBytes image1Path
             Type = Jpeg
             Size = Size(width = 14000000, height = 3250000) }
           // Currently doesn't work. Need really good debugging skills to fix this. 
