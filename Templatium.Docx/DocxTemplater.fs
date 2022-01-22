@@ -26,9 +26,10 @@ module DocxTemplater =
             doc.MainDocumentPart.FooterParts
             |> Seq.collect findSdts
         )
-        
+
         if doc.MainDocumentPart.FootnotesPart <> null then
             sdts.AddRange(findSdts doc.MainDocumentPart.FootnotesPart)
+
         if doc.MainDocumentPart.EndnotesPart <> null then
             sdts.AddRange(findSdts doc.MainDocumentPart.EndnotesPart)
 
@@ -40,7 +41,7 @@ module DocxTemplater =
         (doc: WordprocessingDocument)
         (node: OpenXmlElement)
         =
-        let sdts = getAllSdtNodesFromNode node |> Seq.rev
+        let sdts = getAllSdtNodesFromNode node
 
         let metadata =
             { Processors = processors
@@ -78,31 +79,56 @@ module DocxTemplater =
 
         doc.MainDocumentPart.FooterParts
         |> Seq.iter fillPart
-        
+
         if doc.MainDocumentPart.FootnotesPart <> null then
             fillPart doc.MainDocumentPart.FootnotesPart
+
         if doc.MainDocumentPart.EndnotesPart <> null then
             fillPart doc.MainDocumentPart.EndnotesPart
-        
+
         doc
 
-    // TODO: Try find more functional approach
+
+    type private NearNode =
+        | PreviousSibling of OpenXmlElement
+        | NextSibling of OpenXmlElement
+        | Parent of OpenXmlElement
+
     let deleteContentControls (doc: WordprocessingDocument) =
         let sdts = getAllSdtNodesFromDoc doc
 
         for i = sdts.Count - 1 downto 0 do
             let sdt = sdts[i]
 
-            let sdtContent =
+            let sdtContentOpt =
                 OpenXmlHelpers.findFirstNodeByName sdt Constants.sdtContent
 
-            match sdtContent with
-            | Some block ->
-                let mutable prev = sdt.PreviousSibling()
+            match sdtContentOpt with
+            | Some sdtContent when sdtContent.ChildElements.Count > 0 ->
 
-                for child in block.ChildElements do
-                    prev <- prev.InsertAfterSelf(child.CloneNode(true))
-            | None -> ()
+                // We need to find node relative to the first child when sdt node deleted
+                let nearNode =
+                    match sdt.PreviousSibling() with
+                    | null ->
+                        match sdt.NextSibling() with
+                        | null -> Parent sdt.Parent
+                        | next -> NextSibling next
+                    | previous -> PreviousSibling previous
+
+                let firstChild = sdtContent.ChildElements[0]
+
+                let mutable prev =
+                    match nearNode with
+                    | PreviousSibling prevSib -> prevSib.InsertAfterSelf(firstChild.CloneNode(true))
+                    | NextSibling nextSib -> sdt.Parent.InsertBefore(firstChild.CloneNode(true), nextSib)
+                    | Parent parent -> parent.AppendChild(firstChild.CloneNode(true))
+
+                sdtContent.ChildElements
+                |> Seq.skip 1
+                |> Seq.iter (fun child -> prev <- prev.InsertAfterSelf(child.CloneNode(true)))
+
+                ()
+            | _ -> ()
 
             sdt.Remove()
 
