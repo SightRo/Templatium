@@ -12,26 +12,32 @@ let inputPath = __SOURCE_DIRECTORY__ + "/input.docx"
 let outputPath = __SOURCE_DIRECTORY__ + "/output.docx"
 
 [<Literal>]
-let imagePath = __SOURCE_DIRECTORY__ + "/image.png"
+let imagePath = __SOURCE_DIRECTORY__ + "/image.jpg"
 
 let run () =
     let imageBytes = File.ReadAllBytes imagePath
 
     let contents: IContent seq =
-        [ { Title = "ReplaceImage"
+        [ { Title = "ReplaceImageWithOriginalSize"
             Image = imageBytes
-            Type = Png
+            Type = Jpeg
             Size = Original }
-          { Title = "AddImage"
+          { Title = "ReplaceImageWithExplicitSize"
             Image = imageBytes
-            Type = Png
-            Size = Size(width = 1250, height = 525) } ]
+            Type = Jpeg
+            Size = Size(width = 14000000, height = 3250000) }
+          // Currently doesn't work. Need really good debugging skills to fix this. 
+//          { Title = "AddImage"
+//            Image = imageBytes
+//            Type = Jpeg
+//            Size = Size(width = 12500000, height = 5250000) }
+          ]
 
     use doc =
-        WordprocessingDocument.Open(inputPath, true)
+        WordprocessingDocument.Open(new MemoryStream(File.ReadAllBytes(inputPath)), true)
 
     doc
-    |> DocxTemplater.fillDocument [ImageProcessor()] contents
+    |> DocxTemplater.fillDocument [ ImageProcessor() ] contents
     |> DocxTemplater.deleteContentControls
 
     doc.SaveAs outputPath |> ignore
