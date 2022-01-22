@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Templatium.Docx", "Templatium.Docx\Templatium.Docx.fsproj", "{16E7266C-135F-4AF3-BB0C-E358C17B1A8B}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Templatium.Docx.Samples", "Templatium.Docx.Samples\Templatium.Docx.Samples.fsproj", "{16182609-0DA6-4B24-9745-F98D4E1F9D87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{16E7266C-135F-4AF3-BB0C-E358C17B1A8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16E7266C-135F-4AF3-BB0C-E358C17B1A8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16E7266C-135F-4AF3-BB0C-E358C17B1A8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16182609-0DA6-4B24-9745-F98D4E1F9D87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16182609-0DA6-4B24-9745-F98D4E1F9D87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16182609-0DA6-4B24-9745-F98D4E1F9D87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16182609-0DA6-4B24-9745-F98D4E1F9D87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
