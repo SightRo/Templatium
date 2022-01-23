@@ -1,8 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <LangVersion>6.0</LangVersion>
+        <PackageVersion>0.0.1</PackageVersion>
+        <Title>Yet another docx template library </Title>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>SightRo</Authors>
+        <Description>Docx library. Human friendly. Installed word is not needed.</Description>
+        <PackageLicenseUrl>https://github.com/SightRo/Templatium/blob/master/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/SightRo/Templatium</RepositoryUrl>
+        <PackageTags>Word Templates Document OpenXML Office </PackageTags>
+        <AssemblyVersion>0.0.1</AssemblyVersion>
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
