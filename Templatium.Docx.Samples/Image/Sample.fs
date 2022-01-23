@@ -13,24 +13,30 @@ let outputPath = __SOURCE_DIRECTORY__ + "/output.docx"
 
 [<Literal>]
 let imagePath = __SOURCE_DIRECTORY__ + "/image.jpg"
+
 [<Literal>]
 let image1Path = __SOURCE_DIRECTORY__ + "/image1.png"
 
 let run () =
+    use image = new FileStream(imagePath, FileMode.Open)
+    use image1 = new FileStream(image1Path, FileMode.Open)
+
     let contents: IContent seq =
         [ { Title = "ReplaceImageWithOriginalSize"
-            Image = File.ReadAllBytes imagePath
+            Image = image
             Type = Jpeg
-            Size = Original }
+            Format = Original
+            ImagePartBehavior = Replace }
           { Title = "ReplaceImageWithExplicitSize"
-            Image = File.ReadAllBytes image1Path
-            Type = Jpeg
-            Size = Size(width = 14000000, height = 3250000) }
-          // Currently doesn't work. Need really good debugging skills to fix this. 
+            Image = image1
+            Type = Png
+            Format = Size { Width = 14000000; Height = 3250000 }
+            ImagePartBehavior = Replace }
+          // Currently doesn't work. Need really good debugging skills to fix this.
 //          { Title = "AddImage"
-//            Image = imageBytes
-//            Type = Jpeg
-//            Size = Size(width = 12500000, height = 5250000) }
+//            Image = image1
+//            Type = Png
+//            Size = { Width = 12500000; Height = 5250000 } }
           ]
 
     use doc =

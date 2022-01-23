@@ -12,24 +12,32 @@ let inputPath = __SOURCE_DIRECTORY__ + "/input.docx"
 let outputPath = __SOURCE_DIRECTORY__ + "/output.docx"
 
 [<Literal>]
-let facebook = __SOURCE_DIRECTORY__ + "/facebook.png"
+let facebookPath = __SOURCE_DIRECTORY__ + "/facebook.png"
 
 [<Literal>]
-let netscape = __SOURCE_DIRECTORY__ + "/netscape.png"
+let netscapePath = __SOURCE_DIRECTORY__ + "/netscape.png"
 
 let run () =
+    use facebook =
+        new FileStream(facebookPath, FileMode.Open)
+
+    use netscape =
+        new FileStream(netscapePath, FileMode.Open)
+
     let rows: List<List<IContent>> =
         [ [ { Title = "Name"; Value = "Facebook" }
             { Title = "Logo"
-              Image = File.ReadAllBytes(facebook)
+              Image = facebook
               Type = Png
-              Size = Original }
+              Format = Original
+              ImagePartBehavior = Add }
             { Title = "IsActive"; Value = true } ]
           [ { Title = "Name"; Value = "Netscape" }
             { Title = "Logo"
-              Image = File.ReadAllBytes(netscape)
+              Image = netscape
               Type = Png
-              Size = Original }
+              Format = Original
+              ImagePartBehavior = Add }
             { Title = "IsActive"; Value = false } ] ]
 
     let tableContent =
