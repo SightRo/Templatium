@@ -14,7 +14,7 @@ let outputPath = __SOURCE_DIRECTORY__ + "/output.docx"
 [<Literal>]
 let imagePath = __SOURCE_DIRECTORY__ + "/image.jpg"
 [<Literal>]
-let image1Path = __SOURCE_DIRECTORY__ + "/image.jpg"
+let image1Path = __SOURCE_DIRECTORY__ + "/image1.png"
 
 let run () =
     let contents: IContent seq =
