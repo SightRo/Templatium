@@ -8,5 +8,6 @@ module Processors =
     let defaults: IProcessor seq =
         [ StringProcessor()
           ImageProcessor()
+          ListProcessor()
           TableProcessor()
           CheckBoxProcessor() ]

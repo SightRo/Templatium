@@ -8,6 +8,7 @@
     <ItemGroup>
         <Compile Include="String\Sample.fs" />
         <Compile Include="Image\Sample.fs" />
+        <Compile Include="List\Sample.fs" />
         <Compile Include="Table\Sample.fs" />
         <Compile Include="Checkbox\Sample.fs" />
         <Compile Include="Program.fs" />
@@ -15,6 +16,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Templatium.Docx\Templatium.Docx.fsproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="FSharp.Core" Version="6.0.3" />
     </ItemGroup>
 
 </Project>

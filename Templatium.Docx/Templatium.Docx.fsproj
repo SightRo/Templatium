@@ -17,6 +17,8 @@
 
     <ItemGroup>
         <PackageReference Include="DocumentFormat.OpenXml" Version="2.15.0" />
+        <PackageReference Update="FSharp.Core" Version="6.0.3" />
+        <PackageReference Include="System.IO.Packaging" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,6 +28,7 @@
         <Compile Include="DocxTemplater.fs" />
 		<Compile Include="Processors\String.fs" />
 		<Compile Include="Processors\Image.fs" />
+		<Compile Include="Processors\List.fs" />
 		<Compile Include="Processors\Table.fs" />
 		<Compile Include="Processors\Checkbox.fs" />
 		<Compile Include="Processors\DefaultProcessors.fs" />
