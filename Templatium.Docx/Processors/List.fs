@@ -1,5 +1,6 @@
 ﻿namespace Templatium.Docx.Processors
 
+open Templatium.CSharpInterop
 open DocumentFormat.OpenXml
 open DocumentFormat.OpenXml.Wordprocessing
 open Microsoft.FSharp.Collections
@@ -36,7 +37,11 @@ type ListProcessor() =
 
                     for itemContent in listContent.Items do
                         let clonedNode = templateNode.CloneNode true
-                        previousItemNode <- previousItemNode.InsertAfterSelf (Paragraph(Run(clonedNode)))
+
+                        let nodeToInsert =
+                            Paragraph().With [Run().With [ clonedNode ]]
+
+                        previousItemNode <- previousItemNode.InsertAfterSelf nodeToInsert
                         DocxTemplater.fillNode metadata.Processors [ itemContent ] metadata.Document clonedNode.Parent
 
                     templateNode.Remove()

@@ -32,11 +32,10 @@ let run () =
             Type = Png
             Format = Size { Width = 14000000; Height = 3250000 }
             ImagePartBehavior = Replace }
-           //Currently doesn't work. Need really good debugging skills to fix this.
-//          { Title = "AddImage"
-//            Image = image1
-//            Type = Png
-//            Size = { Width = 12500000; Height = 5250000 } }
+          { Title = "AddImage"
+            Image = image1
+            Type = Png
+            Size = { Width = 12500000; Height = 5250000 } }
           ]
 
     use doc =

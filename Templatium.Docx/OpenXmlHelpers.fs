@@ -3,6 +3,12 @@
 open DocumentFormat.OpenXml
 
 module OpenXmlHelpers =
+
+    type OpenXmlElement with
+        member this.With children =
+            this.Append(children)
+            this
+
     let findFirstNodeByName<'t when 't :> OpenXmlElement> (element: OpenXmlElement) name =
         element.Descendants()
         |> Seq.filter (fun el -> el.LocalName = name)

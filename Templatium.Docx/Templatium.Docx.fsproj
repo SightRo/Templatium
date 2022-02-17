@@ -34,4 +34,8 @@
 		<Compile Include="Processors\DefaultProcessors.fs" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Templatium.CSharpInterop\Templatium.CSharpInterop.csproj" />
+    </ItemGroup>
+
 </Project>
