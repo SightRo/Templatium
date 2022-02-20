@@ -24,3 +24,6 @@ jobs:
 
       - name: Build
         run: dotnet build
+
+      - name: Pck
+        run: dotnet pack
