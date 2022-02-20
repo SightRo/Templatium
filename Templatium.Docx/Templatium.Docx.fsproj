@@ -3,7 +3,7 @@
     <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <LangVersion>6.0</LangVersion>
-        <PackageVersion>0.0.2</PackageVersion>
+        <PackageVersion>0.0.3</PackageVersion>
         <Title>Yet another docx template library </Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>SightRo</Authors>
@@ -11,7 +11,7 @@
         <PackageLicenseUrl>https://github.com/SightRo/Templatium/blob/master/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/SightRo/Templatium</RepositoryUrl>
         <PackageTags>Word Templates Document OpenXML Office </PackageTags>
-        <AssemblyVersion>0.0.2</AssemblyVersion>
+        <AssemblyVersion>0.0.3</AssemblyVersion>
         <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
