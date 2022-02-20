@@ -7,7 +7,13 @@ open Templatium.Docx
 
 module DocxTemplater =
     let inline private getAllSdtNodesFromNode (node: OpenXmlElement) =
-        OpenXmlHelpers.findDescendantsByName<SdtElement> node Constants.sdt
+        seq {
+            match node with
+            | :? SdtElement as sdt -> yield sdt
+            | _ -> ()
+
+            yield! OpenXmlHelpers.findDescendantsByName<SdtElement> node Constants.sdt
+        }
 
     let private getAllSdtNodesFromDoc (doc: WordprocessingDocument) =
         let sdts = ResizeArray()
@@ -48,8 +54,7 @@ module DocxTemplater =
               Document = doc }
 
         for sdt in sdts do
-            let titleNode =
-                OpenXmlHelpers.findFirstNodeByName<SdtAlias> sdt Constants.alias
+            let titleNode = OpenXmlHelpers.findFirstNodeByName<SdtAlias> sdt Constants.alias
 
             match titleNode with
             | None -> ()
@@ -100,8 +105,7 @@ module DocxTemplater =
         for i = sdts.Count - 1 downto 0 do
             let sdt = sdts[i]
 
-            let sdtContentOpt =
-                OpenXmlHelpers.findFirstNodeByName sdt Constants.sdtContent
+            let sdtContentOpt = OpenXmlHelpers.findFirstNodeByName sdt Constants.sdtContent
 
             match sdtContentOpt with
             | Some sdtContent when sdtContent.ChildElements.Count > 0 ->
