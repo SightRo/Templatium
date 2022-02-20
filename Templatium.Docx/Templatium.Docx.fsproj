@@ -26,6 +26,7 @@
         <Compile Include="DocxTemplater.fs" />
 		<Compile Include="Processors\String.fs" />
 		<Compile Include="Processors\Image.fs" />
+        <Compile Include="Processors\List.fs" />
 		<Compile Include="Processors\Table.fs" />
 		<Compile Include="Processors\Checkbox.fs" />
 		<Compile Include="Processors\DefaultProcessors.fs" />
