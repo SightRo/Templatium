@@ -1,0 +1,26 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  main:
+    runs-on: ubuntu-20.04
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Build
+        run: dotnet build
