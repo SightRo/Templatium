@@ -100,6 +100,12 @@ module internal ImageProcessor =
                 (fun extent ->
                     extent.Cx <- Int64Value(size.Width)
                     extent.Cy <- Int64Value(size.Height))
+                
+            imageBlock.Descendants<Extents>()
+            |> Seq.iter
+                (fun extents ->
+                    extents.Cx <- Int64Value(size.Width)
+                    extents.Cy <- Int64Value(size.Height))
         | Original -> ()
 
         ()
@@ -118,62 +124,71 @@ module internal ImageProcessor =
         // Good luck debugging this shit
         // https://docs.microsoft.com/en-us/office/open-xml/how-to-insert-a-picture-into-a-word-processing-document
         let draw =
-            Drawing(
-                Inline(
-                    Extent(Cx = Int64Value(content.Size.Width), Cy = Int64Value(content.Size.Height)),
+            Drawing() {
+                Inline(DistanceFromTop = UInt32Value(0u),
+                       DistanceFromBottom = UInt32Value(0u),
+                       DistanceFromLeft = UInt32Value(0u),
+                       DistanceFromRight = UInt32Value(0u),
+                       EditId = "50D07946") {
+                    Extent(Cx = Int64Value(content.Size.Width), Cy = Int64Value(content.Size.Height))
+
                     EffectExtent(
                         LeftEdge = Int64Value(0),
                         TopEdge = Int64Value(0),
                         RightEdge = Int64Value(0),
                         BottomEdge = Int64Value(0)
-                    ),
-                    DocProperties(Id = UInt32Value(getUniqId32 ()), Name = StringValue(DateTime.Now.Ticks.ToString())),
-                    NonVisualGraphicFrameDrawingProperties(GraphicFrameLocks(NoChangeAspect = true)),
-                    Graphic(
-                        GraphicData(
-                            Drawing.Pictures.Picture(
-                                Drawing.Pictures.NonVisualPictureProperties(
+                    )
+
+                    DocProperties(Id = UInt32Value(getUniqId32 ()), Name = StringValue(DateTime.Now.Ticks.ToString()))
+                    NonVisualGraphicFrameDrawingProperties() { GraphicFrameLocks(NoChangeAspect = true) }
+
+                    Graphic() {
+                        GraphicData(Uri = StringValue("http://schemas.openxmlformats.org/drawingml/2006/picture")) {
+                            Drawing.Pictures.Picture() {
+                                Drawing.Pictures.NonVisualPictureProperties() {
                                     Drawing.Pictures.NonVisualDrawingProperties(
                                         Id = UInt32Value(getUniqId32 ()),
                                         Name = relationId
-                                    ),
+                                    )
+
                                     Drawing.Pictures.NonVisualPictureDrawingProperties()
-                                ),
-                                Drawing.Pictures.BlipFill(
-                                    Blip(
+                                }
+
+                                Drawing.Pictures.BlipFill() {
+                                    Blip(Embed = StringValue(relationId), CompressionState = BlipCompressionValues.Print) {
                                         BlipExtensionList(
                                             BlipExtension(Uri = StringValue("{28A0092B-C50C-407E-A947-70E740481C1C}"))
-                                        ),
-                                        Embed = StringValue(relationId),
-                                        CompressionState = BlipCompressionValues.Print
-                                    ),
-                                    Stretch(FillRectangle())
-                                ),
-                                Drawing.Pictures.ShapeProperties(
-                                    Transform2D(
-                                        Offset(X = Int64Value(0), Y = Int64Value(0)),
+                                        )
+                                    }
+
+                                    Stretch() { FillRectangle() }
+                                }
+
+                                Drawing.Pictures.ShapeProperties() {
+                                    Transform2D() {
+                                        Offset(X = Int64Value(0), Y = Int64Value(0))
+
                                         Extents(
                                             Cx = Int64Value(content.Size.Width),
                                             Cy = Int64Value(content.Size.Height)
                                         )
-                                    ),
+                                    }
+
                                     PresetGeometry(AdjustValueList(), Preset = ShapeTypeValues.Rectangle)
-                                )
-                            ),
-                            Uri = StringValue("http://schemas.openxmlformats.org/drawingml/2006/picture")
-                        )
-                    ),
-                    DistanceFromTop = UInt32Value(0u),
-                    DistanceFromBottom = UInt32Value(0u),
-                    DistanceFromLeft = UInt32Value(0u),
-                    DistanceFromRight = UInt32Value(0u),
-                    EditId = "50D07946"
-                )
-            )
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
 
         contentBlock.RemoveAllChildren()
-
-        contentBlock.AppendChild(Paragraph(Run(draw)))
+        contentBlock.AppendChild(Paragraph() { Run() { draw } })
         |> ignore
 
         ()
