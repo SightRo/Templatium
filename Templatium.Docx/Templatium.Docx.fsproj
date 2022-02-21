@@ -16,7 +16,7 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
 
         <!-- Package -->
-        <PackageId>Templatium</PackageId>
+        <PackageId>Templatium.Docx</PackageId>
         <PackageVersion>0.1.0</PackageVersion>
         <AssemblyVersion>0.1.0</AssemblyVersion>
         <AssemblyTitle>Templatium.Docx</AssemblyTitle>
