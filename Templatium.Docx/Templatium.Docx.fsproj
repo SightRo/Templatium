@@ -1,35 +1,55 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <!-- Build -->
+        <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>6.0</LangVersion>
-        <PackageVersion>0.0.3</PackageVersion>
-        <Title>Yet another docx template library </Title>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <OutputType>Library</OutputType>
+        <DebugType>portable</DebugType>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+        <!-- Source Linking -->
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+        <!-- Package -->
+        <PackageId>Templatium</PackageId>
+        <PackageVersion>0.1.0</PackageVersion>
+        <AssemblyVersion>0.1.0</AssemblyVersion>
+        <AssemblyTitle>Templatium.Docx</AssemblyTitle>
+        <Title>Templatium.Docx</Title>
         <Authors>SightRo</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/SightRo/Templatium</PackageProjectUrl>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/SightRo/Templatium.git</RepositoryUrl>
+        <PackageTags>Word Templates Documents OpenXML Office</PackageTags>
         <Description>Docx library. Human friendly. Installed word is not needed.</Description>
-        <PackageLicenseUrl>https://github.com/SightRo/Templatium/blob/master/LICENSE</PackageLicenseUrl>
-        <RepositoryUrl>https://github.com/SightRo/Templatium</RepositoryUrl>
-        <PackageTags>Word Templates Document OpenXML Office </PackageTags>
-        <AssemblyVersion>0.0.3</AssemblyVersion>
-        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+    <!-- Deterministic Build -->
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DocumentFormat.OpenXml" Version="2.15.0" />
+        <PackageReference Include="DocumentFormat.OpenXml" Version="2.15.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="Base.fs" />
-        <Compile Include="Constants.fs" />
-		<Compile Include="OpenXmlHelpers.fs" />
-        <Compile Include="DocxTemplater.fs" />
-		<Compile Include="Processors\String.fs" />
-		<Compile Include="Processors\Image.fs" />
-        <Compile Include="Processors\List.fs" />
-		<Compile Include="Processors\Table.fs" />
-		<Compile Include="Processors\Checkbox.fs" />
-		<Compile Include="Processors\DefaultProcessors.fs" />
+        <Compile Include="Base.fs"/>
+        <Compile Include="Constants.fs"/>
+        <Compile Include="OpenXmlHelpers.fs"/>
+        <Compile Include="DocxTemplater.fs"/>
+        <Compile Include="Processors\String.fs"/>
+        <Compile Include="Processors\Image.fs"/>
+        <Compile Include="Processors\List.fs"/>
+        <Compile Include="Processors\Table.fs"/>
+        <Compile Include="Processors\Checkbox.fs"/>
+        <Compile Include="Processors\DefaultProcessors.fs"/>
     </ItemGroup>
 
 </Project>
