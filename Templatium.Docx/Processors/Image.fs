@@ -63,12 +63,6 @@ module internal ImageProcessor =
         | Tiff -> ImagePartType.Tiff
         | Wmf -> ImagePartType.Wmf
 
-    // TODO: Investigate. Does it really need id properties
-    let getUniqId32 () = Convert.ToUInt32(Random.Shared.Next())
-
-    let getUniqId64 () =
-        Convert.ToUInt64(Random.Shared.NextInt64())
-
     let addImagePart (doc: WordprocessingDocument) (imageType: ImagePartType) image =
         let imagePart =
             doc.MainDocumentPart.AddImagePart imageType
@@ -139,7 +133,7 @@ module internal ImageProcessor =
                         BottomEdge = Int64Value(0)
                     )
 
-                    DocProperties(Id = UInt32Value(getUniqId32 ()), Name = StringValue(DateTime.Now.Ticks.ToString()))
+                    DocProperties(Id = UInt32Value(1u), Name = StringValue(DateTime.Now.Ticks.ToString()))
                     NonVisualGraphicFrameDrawingProperties() { GraphicFrameLocks(NoChangeAspect = true) }
 
                     Graphic() {
@@ -147,7 +141,7 @@ module internal ImageProcessor =
                             Drawing.Pictures.Picture() {
                                 Drawing.Pictures.NonVisualPictureProperties() {
                                     Drawing.Pictures.NonVisualDrawingProperties(
-                                        Id = UInt32Value(getUniqId32 ()),
+                                        Id = UInt32Value(0u),
                                         Name = relationId
                                     )
 

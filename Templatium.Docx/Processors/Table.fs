@@ -4,7 +4,6 @@ open DocumentFormat.OpenXml
 open DocumentFormat.OpenXml.Wordprocessing
 open Microsoft.FSharp.Collections
 open Templatium.Docx
-open System.Linq
 
 type TableContent =
     { Title: string

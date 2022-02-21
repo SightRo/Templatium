@@ -25,7 +25,7 @@ type StringProcessor() =
                     // So it not tested in any sense
                     block.RemoveAllChildren()
 
-                    block.AppendChild(Paragraph(Run(Text(stringContent.Value))))
+                    block.AppendChild(Paragraph() { Run() { Text(stringContent.Value) } })
                     |> ignore
                 | _ ->
                     // If text is multiline, Word insert multiple text nodes (one per line)

@@ -34,12 +34,18 @@ module private ProcessorImpl =
 
         sdt.RemoveAllChildren()
 
-        sdt.SdtProperties.AppendChild(SdtContentCheckBox(checkedNode, checkedStateNode, uncheckedStateNode))
+        sdt.SdtProperties.AppendChild(
+            SdtContentCheckBox() {
+                checkedNode
+                checkedStateNode
+                uncheckedStateNode
+            }
+        )
         |> ignore
 
         sdt
             .GetFirstChild<SdtContentRun>()
-            .AppendChild(Run(Text(symbol)))
+            .AppendChild(Run() { Text(symbol) })
         |> ignore
 
         ()
